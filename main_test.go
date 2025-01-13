@@ -1,13 +1,30 @@
-// main_test.go
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestMain(t *testing.T) {
-	expected := "Hello, CI/CD with Jenkins!"
-	if expected != "Hello, CI/CD with Jenkins!" {
-		t.Fatalf("Expected %s but got %s", expected, "Hello, CI/CD with Jenkins!")
-	}
+func TestHealthRoute(t *testing.T) {
+
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Healthy",
+		})
+	})
+
+	req, _ := http.NewRequest("GET", "/health", nil)
+	resp := httptest.NewRecorder()
+
+	router.ServeHTTP(resp, req)
+
+	assert.Equal(t, http.StatusOK, resp.Code)
+	assert.JSONEq(t, `{"message": "Healthy"}`, resp.Body.String())
 }

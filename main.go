@@ -1,8 +1,19 @@
-// main.go
 package main
 
-import "fmt"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	fmt.Println("Hello, CI/CD with jenkins!")
+	r := gin.Default()
+
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Healthy",
+		})
+	})
+
+	r.Run(":3000")
 }
