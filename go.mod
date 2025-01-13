@@ -1,3 +1,3 @@
-module example.com/go-ci-cd
+module CI/CD
 
 go 1.22.2
